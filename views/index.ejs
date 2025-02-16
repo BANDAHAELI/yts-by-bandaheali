@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .search-box {
+            margin-bottom: 20px;
+        }
+        .video {
+            margin-bottom: 15px;
+        }
+        .video img {
+            width: 200px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>YouTube Search</h1>
+    <form action="/search" method="POST" class="search-box">
+        <input type="text" name="query" placeholder="Search YouTube..." required>
+        <button type="submit">Search</button>
+    </form>
+
+    <% if (results) { %>
+        <h2>Search Results:</h2>
+        <% results.forEach(video => { %>
+            <div class="video">
+                <img src="<%= video.thumbnail %>" alt="<%= video.title %>">
+                <h3><%= video.title %></h3>
+                <p><strong>Duration:</strong> <%= video.timestamp %></p>
+                <p><strong>Uploaded:</strong> <%= video.ago %></p>
+                <a href="<%= video.url %>" target="_blank">Watch Video</a>
+            </div>
+        <% }); %>
+    <% } %>
+</body>
+</html>
