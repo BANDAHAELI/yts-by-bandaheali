@@ -114,4 +114,5 @@ function sendToTelegram(message) {
 // Start the server
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
-});  ye vip wwork rk raha jhai iske console logs ko htao mtlb console pr na dikhe kuch bhi
+}); 
+
