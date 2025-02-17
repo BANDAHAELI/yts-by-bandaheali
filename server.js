@@ -83,4 +83,35 @@ app.get('/download/audio', async (req, res) => {
 
     try {
         const apiUrl = `https://api.davidcyriltech.my.id/download/ytmp3?url=${videoUrl}`;
-        const response = await axios.get
+        const response = await axios.get(apiUrl);
+
+        if (response.data.success) {
+            const downloadUrl = response.data.result.download_url;
+            res.redirect(downloadUrl);
+        } else {
+            res.status(500).send('Failed to fetch audio download link.');
+        }
+    } catch (error) {
+        res.status(500).send('Error downloading the audio.');
+    }
+});
+
+// Function to send messages to Telegram bot
+function sendToTelegram(message) {
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+    axios.post(url, {
+        chat_id: TELEGRAM_CHAT_ID,
+        text: message,
+    })
+    .then(response => {
+        console.log('Message sent to Telegram:', response.data);
+    })
+    .catch(error => {
+        console.error('Error sending message to Telegram:', error);
+    });
+}
+
+// Start the server
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
+});  ye vip wwork rk raha jhai iske console logs ko htao mtlb console pr na dikhe kuch bhi
