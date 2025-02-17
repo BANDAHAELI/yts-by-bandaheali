@@ -33,6 +33,12 @@
         .buttons a:hover {
             background-color: #0056b3;
         }
+        .buttons a.audio {
+            background-color: #28a745;
+        }
+        .buttons a.audio:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body>
@@ -52,7 +58,8 @@
                 <p><strong>Uploaded:</strong> <%= video.ago %></p>
                 <div class="buttons">
                     <a href="<%= video.url %>" target="_blank">Watch Video</a>
-                    <a href="/download?url=<%= video.url %>">Download Now</a>
+                    <a href="/download/video?url=<%= video.url %>">Download Video</a>
+                    <a href="/download/audio?url=<%= video.url %>" class="audio">Download Audio</a>
                 </div>
             </div>
         <% }); %>
