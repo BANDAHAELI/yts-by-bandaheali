@@ -3,21 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Search</title>
+    <title>Bandahealis YouTube VIDEO && NAAT Downloader</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+            color: #333;
         }
-        .search-box {
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
             margin-bottom: 20px;
         }
+        .search-box {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .search-box input[type="text"] {
+            width: 70%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .search-box button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .search-box button:hover {
+            background-color: #0056b3;
+        }
         .video {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
         }
         .video img {
-            width: 200px;
+            width: 100%;
+            max-width: 200px;
             height: auto;
+            border-radius: 5px;
+        }
+        .video h3 {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+        .video p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
         }
         .buttons {
             margin-top: 10px;
@@ -27,8 +78,9 @@
             text-decoration: none;
             color: white;
             background-color: #007bff;
-            padding: 5px 10px;
+            padding: 8px 15px;
             border-radius: 5px;
+            font-size: 14px;
         }
         .buttons a:hover {
             background-color: #0056b3;
@@ -42,27 +94,29 @@
     </style>
 </head>
 <body>
-    <h1>YouTube Search</h1>
-    <form action="/search" method="POST" class="search-box">
-        <input type="text" name="query" placeholder="Search YouTube..." required>
-        <button type="submit">Search</button>
-    </form>
+    <div class="container">
+        <h1>Bandahealis YouTube VIDEO && NAAT Downloader</h1>
+        <form action="/search" method="POST" class="search-box">
+            <input type="text" name="query" placeholder="Enter YouTube video or NAAT name..." required>
+            <button type="submit">Search</button>
+        </form>
 
-    <% if (results) { %>
-        <h2>Search Results:</h2>
-        <% results.forEach(video => { %>
-            <div class="video">
-                <img src="<%= video.thumbnail %>" alt="<%= video.title %>">
-                <h3><%= video.title %></h3>
-                <p><strong>Duration:</strong> <%= video.timestamp %></p>
-                <p><strong>Uploaded:</strong> <%= video.ago %></p>
-                <div class="buttons">
-                    <a href="<%= video.url %>" target="_blank">Watch Video</a>
-                    <a href="/download/video?url=<%= video.url %>">Download Video</a>
-                    <a href="/download/audio?url=<%= video.url %>" class="audio">Download Audio</a>
+        <% if (results) { %>
+            <h2>Search Results:</h2>
+            <% results.forEach(video => { %>
+                <div class="video">
+                    <img src="<%= video.thumbnail %>" alt="<%= video.title %>">
+                    <h3><%= video.title %></h3>
+                    <p><strong>Duration:</strong> <%= video.timestamp %></p>
+                    <p><strong>Uploaded:</strong> <%= video.ago %></p>
+                    <div class="buttons">
+                        <a href="<%= video.url %>" target="_blank">Watch Video</a>
+                        <a href="/download/video?url=<%= video.url %>">Download Video</a>
+                        <a href="/download/audio?url=<%= video.url %>" class="audio">Download Audio</a>
+                    </div>
                 </div>
-            </div>
-        <% }); %>
-    <% } %>
+            <% }); %>
+        <% } %>
+    </div>
 </body>
 </html>
