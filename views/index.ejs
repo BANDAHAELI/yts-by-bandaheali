@@ -19,6 +19,20 @@
             width: 200px;
             height: auto;
         }
+        .buttons {
+            margin-top: 10px;
+        }
+        .buttons a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .buttons a:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -36,7 +50,10 @@
                 <h3><%= video.title %></h3>
                 <p><strong>Duration:</strong> <%= video.timestamp %></p>
                 <p><strong>Uploaded:</strong> <%= video.ago %></p>
-                <a href="<%= video.url %>" target="_blank">Watch Video</a>
+                <div class="buttons">
+                    <a href="<%= video.url %>" target="_blank">Watch Video</a>
+                    <a href="/download?url=<%= video.url %>">Download Now</a>
+                </div>
             </div>
         <% }); %>
     <% } %>
