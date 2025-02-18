@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sarkar-Bandaheali</title>
+    <title>Sarkar-Bandaheali Login</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background: linear-gradient(45deg, 
-                #ff0099, #ff6600, #ffdd00, #00ffcc, #00aaff, #cc00ff, #ff0099);
+            background: linear-gradient(45deg, #ff0099, #ff6600, #ffdd00, #00ffcc, #00aaff, #cc00ff, #ff0099);
             background-size: 400% 400%;
             animation: neonRainbow 10s ease infinite;
             color: #333;
@@ -41,13 +40,13 @@
             margin-bottom: 20px;
         }
 
-        input[type="text"] {
+        input[type="text"], input[type="password"] {
             width: 80%;
             padding: 10px;
             border: 2px solid #007bff;
             border-radius: 5px;
             font-size: 16px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         button {
@@ -64,14 +63,28 @@
         button:hover {
             background-color: #0056b3;
         }
+
+        .forget-btn {
+            display: block;
+            margin-top: 10px;
+            background-color: #dc3545;
+        }
+
+        .forget-btn:hover {
+            background-color: #c82333;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to Bandahealis Downloader</h1>
+        <h1>Welcome to Bandaheali's Downloader</h1>
         <form action="/save-name" method="POST">
             <input type="text" name="userName" placeholder="Enter your name" required>
+            <input type="password" name="password" placeholder="Enter password" required>
             <button type="submit">Submit</button>
+        </form>
+        <form action="/forget" method="POST">
+            <button type="submit" class="forget-btn">Forget Password</button>
         </form>
     </div>
 </body>
