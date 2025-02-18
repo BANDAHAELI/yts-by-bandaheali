@@ -41,7 +41,7 @@
             margin-bottom: 20px;
         }
 
-        input[type="text"] {
+        input[type="text"], input[type="password"] {
             width: 80%;
             padding: 10px;
             border: 2px solid #007bff;
@@ -71,6 +71,7 @@
         <h1>Welcome to Bandahealis Downloader</h1>
         <form action="/save-name" method="POST">
             <input type="text" name="userName" placeholder="Enter your name" required>
+            <input type="password" name="password" placeholder="Enter your password" required>
             <button type="submit">Submit</button>
         </form>
     </div>
