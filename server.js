@@ -38,6 +38,11 @@ app.post('/save-name', (req, res) => {
     res.redirect('/search');
 });
 
+// Route for Signup page
+app.get('/signup', (req, res) => {
+    res.render('signup');
+});
+
 // Search route
 app.get('/search', (req, res) => {
     if (!userData.name) {
