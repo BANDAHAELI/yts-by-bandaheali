@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import bodyParser from 'body-parser';
 import axios from 'axios';
+import ytSearch from 'yt-search';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -34,6 +35,25 @@ function writeUserData(users) {
 app.get('/', (req, res) => {
     res.render('name');
 });
+
+
+
+// Handle search request
+app.post('/search', async (req, res) => {
+    const query = req.body.query;
+
+    try {
+        // Search for the video using yt-search package
+        const searchResults = await ytSearch(query);
+
+        // Render search results
+        res.render('search', { results: searchResults.videos });
+    } catch (error) {
+        console.error('Error while searching:', error);
+        res.render('search', { results: [] });
+    }
+});
+
 
 // Save user name and password
 app.post('/save-name', (req, res) => {
