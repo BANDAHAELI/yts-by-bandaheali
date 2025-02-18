@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Videos</title>
+    <style>
+        /* Style for the search page */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .search-box {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .search-box input[type="text"] {
+            padding: 10px;
+            font-size: 16px;
+            width: 300px;
+            border-radius: 5px;
+        }
+        .search-box button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Search for YouTube Videos</h1>
+    <form action="/search" method="POST" class="search-box">
+        <input type="text" name="query" placeholder="Enter video name..." required>
+        <button type="submit">Search</button>
+    </form>
+    <% if (results && results.length > 0) { %>
+        <h2>Results:</h2>
+        <ul>
+            <% results.forEach(result => { %>
+                <li><a href="<%= result.url %>"><%= result.title %></a></li>
+            <% }); %>
+        </ul>
+    <% } else if (results) { %>
+        <p>No results found.</p>
+    <% } %>
+</body>
+</html>
