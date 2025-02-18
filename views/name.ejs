@@ -3,88 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sarkar-Bandaheali Login</title>
+    <title>Login or Signup</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: linear-gradient(45deg, #ff0099, #ff6600, #ffdd00, #00ffcc, #00aaff, #cc00ff, #ff0099);
-            background-size: 400% 400%;
-            animation: neonRainbow 10s ease infinite;
-            color: #333;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        @keyframes neonRainbow {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .container {
-            max-width: 400px;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-            text-align: center;
-        }
-
-        h1 {
-            color: #007bff;
-            margin-bottom: 20px;
-        }
-
-        input[type="text"], input[type="password"] {
-            width: 80%;
-            padding: 10px;
-            border: 2px solid #007bff;
-            border-radius: 5px;
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-
-        button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: #0056b3;
-        }
-
-        .forget-btn {
-            display: block;
-            margin-top: 10px;
-            background-color: #dc3545;
-        }
-
-        .forget-btn:hover {
-            background-color: #c82333;
-        }
+        /* Add your neon rainbow styles here */
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Welcome to Bandaheali's Downloader</h1>
-        <form action="/save-name" method="POST">
-            <input type="text" name="userName" placeholder="Enter your name" required>
-            <input type="password" name="password" placeholder="Enter password" required>
-            <button type="submit">Submit</button>
+        <h1>Welcome to Bandahealis Downloader</h1>
+        <h2>Login</h2>
+        <form action="/login" method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
         </form>
-        <form action="/forget" method="POST">
-            <button type="submit" class="forget-btn">Forget Password</button>
+
+        <h2>Signup</h2>
+        <form action="/signup" method="POST">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Signup</button>
         </form>
     </div>
 </body>
