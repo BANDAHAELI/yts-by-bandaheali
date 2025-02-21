@@ -123,7 +123,7 @@ app.get('/download/video', async (req, res) => {
     const videoUrl = req.query.url;
 
     try {
-        const apiUrl = `https://api.davidcyriltech.my.id/download/ytmp4?url=${videoUrl}`;
+        const apiUrl = `https://apis.davidcyriltech.my.id/download/ytmp4?url=${videoUrl}`;
         const response = await axios.get(apiUrl);
 
         if (response.data.success) {
@@ -142,7 +142,7 @@ app.get('/download/audio', async (req, res) => {
     const videoUrl = req.query.url;
 
     try {
-        const apiUrl = `https://api.davidcyriltech.my.id/download/ytmp3?url=${videoUrl}`;
+        const apiUrl = `https://apis.davidcyriltech.my.id/download/ytmp3?url=${videoUrl}`;
         const response = await axios.get(apiUrl);
 
         if (response.data.success) {
